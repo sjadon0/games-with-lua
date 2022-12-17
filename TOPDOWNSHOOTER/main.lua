@@ -14,7 +14,7 @@ function love.load()
     
     zombies = {}
     bullets = {}
-    livesLeft=1
+    lives=2
     score=0
     gameState = 1
     maxTime =2
@@ -42,15 +42,21 @@ function love.update(dt)
 
         z.y = z.y + math.sin(zombiePlayerAngle(z))* z.speed * dt
         if distanceBetween(z.x,z.y,player.x,player.y) < 30 then
-            if livesLeft == 1 then
-                livesLeft= livesLeft -1
+            lives = lives -1
+            
+            if lives == 0 then
+                for i,z in ipairs(zombies) do 
+                    zombies[i]=nil
+                end
+                gameState=1
+                player.x = love.graphics.getWidth()/2
+                player.y = love.graphics.getHeight()/2
             else
                 for i,z in ipairs(zombies) do 
                     zombies[i]=nil
-                    gameState=1
-                    player.x = love.graphics.getWidth()/2
-                    player.y = love.graphics.getHeight()/2
                 end
+                player.x = love.graphics.getWidth()/2
+                player.y = love.graphics.getHeight()/2
             end
         end
     end
@@ -102,8 +108,8 @@ function love.draw()
         love.graphics.printf("Click anywhere to begin!",0,50,love.graphics.getWidth(),"center")
     end
     love.graphics.printf("Score : ".. score ,0,love.graphics.getHeight()-50,love.graphics.getWidth(),"left")
-    love.graphics.printf("Lives left : ".. livesLeft ,0,love.graphics.getHeight()-50,love.graphics.getWidth(),"right")
-    if livesLeft == 0 then
+    love.graphics.printf("Lives left : ".. lives ,0,love.graphics.getHeight()-50,love.graphics.getWidth(),"right")
+    if lives==1 then
         love.graphics.setColor(1,0,0)
         love.graphics.draw(sprites.player,player.x,player.y,playerMouseAngle(),nil ,nil,17.5,21.5)
     else
@@ -183,7 +189,7 @@ function love.mousepressed(x,y,button)
         maxTime=2
         timer=maxTime
         score=0
-        livesLeft=1
+        lives=2
 
     end
 end
